@@ -1,1 +1,11 @@
 #import user.graphql
+#import announcement.graphql
+#import cardflag.graphql
+#import client.graphql
+#import interest.graphql
+#import photo.graphql
+#import simulation.graphql
+#import solution.graphql
+#import store.graphql
+#import testimony.graphql
+#import valuetype.graphql

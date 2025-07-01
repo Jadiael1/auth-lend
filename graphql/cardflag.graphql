@@ -1,0 +1,61 @@
+"Credit card brand information."
+type CardFlag @model(class: "App\\Models\\Api\\V1\\CardFlag") {
+  id: ID!
+  name: String!
+  photo_path: String
+  cardFlagInstallmentLimit: CardFlagInstallmentLimit @hasOne
+  interestConfigurations: [InterestConfiguration!]! @hasMany
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+type CardFlagInstallmentLimit @model(class: "App\\Models\\Api\\V1\\CardFlagInstallmentLimit") {
+  id: ID!
+  card_flag_id: Int!
+  installments: Int!
+  min_value: Float!
+  cardFlag: CardFlag @belongsTo
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  cardFlag(id: ID! @eq): CardFlag @find
+  cardFlags(page: Int, name: String @where(operator: "like")): [CardFlag!]! @paginate(defaultCount: 10)
+  cardFlagInstallmentLimit(id: ID! @eq): CardFlagInstallmentLimit @find
+  cardFlagInstallmentLimits(page: Int): [CardFlagInstallmentLimit!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createCardFlag(input: CreateCardFlagInput! @spread): CardFlag! @create(model: "App\\Models\\Api\\V1\\CardFlag")
+  updateCardFlag(input: UpdateCardFlagInput! @spread): CardFlag! @update(model: "App\\Models\\Api\\V1\\CardFlag")
+  deleteCardFlag(id: ID! @whereKey): CardFlag! @delete(model: "App\\Models\\Api\\V1\\CardFlag")
+
+  createCardFlagInstallmentLimit(input: CreateCardFlagInstallmentLimitInput! @spread): CardFlagInstallmentLimit! @create(model: "App\\Models\\Api\\V1\\CardFlagInstallmentLimit")
+  updateCardFlagInstallmentLimit(input: UpdateCardFlagInstallmentLimitInput! @spread): CardFlagInstallmentLimit! @update(model: "App\\Models\\Api\\V1\\CardFlagInstallmentLimit")
+  deleteCardFlagInstallmentLimit(id: ID! @whereKey): CardFlagInstallmentLimit! @delete(model: "App\\Models\\Api\\V1\\CardFlagInstallmentLimit")
+}
+
+input CreateCardFlagInput {
+  name: String!
+  photo_path: String
+}
+
+input UpdateCardFlagInput {
+  id: ID! @whereKey
+  name: String
+  photo_path: String
+}
+
+input CreateCardFlagInstallmentLimitInput {
+  card_flag_id: Int!
+  installments: Int!
+  min_value: Float!
+}
+
+input UpdateCardFlagInstallmentLimitInput {
+  id: ID! @whereKey
+  card_flag_id: Int
+  installments: Int
+  min_value: Float
+}

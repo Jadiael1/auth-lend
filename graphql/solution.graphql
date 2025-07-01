@@ -1,0 +1,42 @@
+"Solution offered to customers."
+type Solution @model(class: "App\\Models\\Api\\V1\\Solution") {
+  id: ID!
+  title: String!
+  description: String
+  photo_path: String
+  order: Int
+  width: String
+  height: String
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  solution(id: ID! @eq): Solution @find
+  solutions(page: Int): [Solution!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createSolution(input: CreateSolutionInput! @spread): Solution! @create(model: "App\\Models\\Api\\V1\\Solution")
+  updateSolution(input: UpdateSolutionInput! @spread): Solution! @update(model: "App\\Models\\Api\\V1\\Solution")
+  deleteSolution(id: ID! @whereKey): Solution! @delete(model: "App\\Models\\Api\\V1\\Solution")
+}
+
+input CreateSolutionInput {
+  title: String!
+  description: String
+  photo_path: String
+  order: Int
+  width: String
+  height: String
+}
+
+input UpdateSolutionInput {
+  id: ID! @whereKey
+  title: String
+  description: String
+  photo_path: String
+  order: Int
+  width: String
+  height: String
+}

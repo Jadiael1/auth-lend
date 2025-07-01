@@ -1,0 +1,42 @@
+"Interest configuration rules."
+type InterestConfiguration @model(class: "App\\Models\\Api\\V1\\InterestConfiguration") {
+  id: ID!
+  card_flag_id: Int!
+  store_id: Int!
+  value_type_id: Int!
+  installments: Int!
+  interest_rate: Float!
+  cardFlag: CardFlag @belongsTo
+  store: Store @belongsTo
+  valueType: ValueType @belongsTo
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  interestConfiguration(id: ID! @eq): InterestConfiguration @find
+  interestConfigurations(page: Int): [InterestConfiguration!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createInterestConfiguration(input: CreateInterestConfigurationInput! @spread): InterestConfiguration! @create(model: "App\\Models\\Api\\V1\\InterestConfiguration")
+  updateInterestConfiguration(input: UpdateInterestConfigurationInput! @spread): InterestConfiguration! @update(model: "App\\Models\\Api\\V1\\InterestConfiguration")
+  deleteInterestConfiguration(id: ID! @whereKey): InterestConfiguration! @delete(model: "App\\Models\\Api\\V1\\InterestConfiguration")
+}
+
+input CreateInterestConfigurationInput {
+  card_flag_id: Int!
+  store_id: Int!
+  value_type_id: Int!
+  installments: Int!
+  interest_rate: Float!
+}
+
+input UpdateInterestConfigurationInput {
+  id: ID! @whereKey
+  card_flag_id: Int
+  store_id: Int
+  value_type_id: Int
+  installments: Int
+  interest_rate: Float
+}

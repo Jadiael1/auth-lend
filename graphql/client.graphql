@@ -1,0 +1,75 @@
+"Client information registered in the system."
+type Client @model(class: "App\\Models\\Api\\V1\\Client") {
+  id: ID!
+  full_name: String!
+  street: String
+  neighborhood: String
+  state: String
+  zip_code: String
+  city: String
+  phone: String
+  rg: String
+  rg_front_photo_path: String
+  rg_back_photo_path: String
+  cpf: String
+  cpf_front_photo_path: String
+  cpf_back_photo_path: String
+  description: String
+  legal_representative: String
+  father_name: String
+  mother_name: String
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  client(id: ID! @eq): Client @find
+  clients(page: Int, full_name: String @where(operator: "like")): [Client!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createClient(input: CreateClientInput! @spread): Client! @create(model: "App\\Models\\Api\\V1\\Client")
+  updateClient(input: UpdateClientInput! @spread): Client! @update(model: "App\\Models\\Api\\V1\\Client")
+  deleteClient(id: ID! @whereKey): Client! @delete(model: "App\\Models\\Api\\V1\\Client")
+}
+
+input CreateClientInput {
+  full_name: String!
+  street: String
+  neighborhood: String
+  state: String
+  zip_code: String
+  city: String
+  phone: String
+  rg: String
+  rg_front_photo_path: String
+  rg_back_photo_path: String
+  cpf: String
+  cpf_front_photo_path: String
+  cpf_back_photo_path: String
+  description: String
+  legal_representative: String
+  father_name: String
+  mother_name: String
+}
+
+input UpdateClientInput {
+  id: ID! @whereKey
+  full_name: String
+  street: String
+  neighborhood: String
+  state: String
+  zip_code: String
+  city: String
+  phone: String
+  rg: String
+  rg_front_photo_path: String
+  rg_back_photo_path: String
+  cpf: String
+  cpf_front_photo_path: String
+  cpf_back_photo_path: String
+  description: String
+  legal_representative: String
+  father_name: String
+  mother_name: String
+}
