@@ -25,3 +25,6 @@ npm-debug.log
 Thumbs.db
 yarn-error.log
 /storage/api-docs/api-docs.json
+schema-directives.graphql
+programmatic-types.graphql
+_lighthouse_ide_helper.php
