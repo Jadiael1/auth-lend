@@ -1,0 +1,33 @@
+"Value type configuration."
+type ValueType @model(class: "App\\Models\\Api\\V1\\ValueType") {
+  id: ID!
+  type: String!
+  interest_rate: Float
+  direction: String
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  valueType(id: ID! @eq): ValueType @find
+  valueTypes(page: Int): [ValueType!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createValueType(input: CreateValueTypeInput! @spread): ValueType! @create(model: "App\\Models\\Api\\V1\\ValueType")
+  updateValueType(input: UpdateValueTypeInput! @spread): ValueType! @update(model: "App\\Models\\Api\\V1\\ValueType")
+  deleteValueType(id: ID! @whereKey): ValueType! @delete(model: "App\\Models\\Api\\V1\\ValueType")
+}
+
+input CreateValueTypeInput {
+  type: String!
+  interest_rate: Float
+  direction: String
+}
+
+input UpdateValueTypeInput {
+  id: ID! @whereKey
+  type: String
+  interest_rate: Float
+  direction: String
+}

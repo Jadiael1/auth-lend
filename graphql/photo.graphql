@@ -1,0 +1,31 @@
+"Store photo file."
+type PhotoStore @model(class: "App\\Models\\Api\\V1\\PhotoStore") {
+  id: ID!
+  photo_path: String!
+  store_id: Int
+  store: Store @belongsTo
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  photoStore(id: ID! @eq): PhotoStore @find
+  photoStores(page: Int, store_id: Int): [PhotoStore!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createPhotoStore(input: CreatePhotoStoreInput! @spread): PhotoStore! @create(model: "App\\Models\\Api\\V1\\PhotoStore")
+  updatePhotoStore(input: UpdatePhotoStoreInput! @spread): PhotoStore! @update(model: "App\\Models\\Api\\V1\\PhotoStore")
+  deletePhotoStore(id: ID! @whereKey): PhotoStore! @delete(model: "App\\Models\\Api\\V1\\PhotoStore")
+}
+
+input CreatePhotoStoreInput {
+  photo_path: String!
+  store_id: Int
+}
+
+input UpdatePhotoStoreInput {
+  id: ID! @whereKey
+  photo_path: String
+  store_id: Int
+}

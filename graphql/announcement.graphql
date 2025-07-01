@@ -1,0 +1,52 @@
+"Announcement about offers or updates."
+type Announcement @model(class: "App\\Models\\Api\\V1\\Announcement") {
+  id: ID!
+  title: String!
+  subtitle: String
+  message: String
+  button_text: String
+  button_url: String
+  note: String
+  order: Int
+  status: Boolean!
+  photo_path: String
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  announcement(id: ID! @eq): Announcement @find
+  announcements(page: Int, status: Boolean): [Announcement!]!
+    @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createAnnouncement(input: CreateAnnouncementInput! @spread): Announcement! @create(model: "App\\Models\\Api\\V1\\Announcement")
+  updateAnnouncement(input: UpdateAnnouncementInput! @spread): Announcement! @update(model: "App\\Models\\Api\\V1\\Announcement")
+  deleteAnnouncement(id: ID! @whereKey): Announcement! @delete(model: "App\\Models\\Api\\V1\\Announcement")
+}
+
+input CreateAnnouncementInput {
+  title: String!
+  subtitle: String
+  message: String
+  button_text: String
+  button_url: String
+  note: String
+  order: Int
+  status: Boolean = true
+  photo_path: String
+}
+
+input UpdateAnnouncementInput {
+  id: ID! @whereKey
+  title: String
+  subtitle: String
+  message: String
+  button_text: String
+  button_url: String
+  note: String
+  order: Int
+  status: Boolean
+  photo_path: String
+}

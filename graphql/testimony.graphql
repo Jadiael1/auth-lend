@@ -1,0 +1,45 @@
+"Customer testimony."
+type Testimony @model(class: "App\\Models\\Api\\V1\\Testimony") {
+  id: ID!
+  name: String!
+  surname: String!
+  city: String!
+  uf: String!
+  photo_path: String
+  message: String
+  status: Boolean!
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  testimony(id: ID! @eq): Testimony @find
+  testimonies(page: Int, status: Boolean): [Testimony!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createTestimony(input: CreateTestimonyInput! @spread): Testimony! @create(model: "App\\Models\\Api\\V1\\Testimony")
+  updateTestimony(input: UpdateTestimonyInput! @spread): Testimony! @update(model: "App\\Models\\Api\\V1\\Testimony")
+  deleteTestimony(id: ID! @whereKey): Testimony! @delete(model: "App\\Models\\Api\\V1\\Testimony")
+}
+
+input CreateTestimonyInput {
+  name: String!
+  surname: String!
+  city: String!
+  uf: String!
+  photo_path: String
+  message: String
+  status: Boolean = true
+}
+
+input UpdateTestimonyInput {
+  id: ID! @whereKey
+  name: String
+  surname: String
+  city: String
+  uf: String
+  photo_path: String
+  message: String
+  status: Boolean
+}

@@ -1,0 +1,74 @@
+"Store entity."
+type Store @model(class: "App\\Models\\Api\\V1\\Store") {
+  id: ID!
+  name: String!
+  address: StoreAddress @hasOne
+  photoStores: [PhotoStore!]! @hasMany
+  interestConfigurations: [InterestConfiguration!]! @hasMany
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+type StoreAddress @model(class: "App\\Models\\Api\\V1\\StoreAddress") {
+  id: ID!
+  uf: String!
+  city: String!
+  neighborhood: String!
+  zip_code: String!
+  street: String!
+  number: Int!
+  coordinates: String
+  store_id: Int
+  store: Store @belongsTo
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  store(id: ID! @eq): Store @find
+  stores(page: Int, name: String @where(operator: "like")): [Store!]! @paginate(defaultCount: 10)
+  storeAddress(id: ID! @eq): StoreAddress @find
+  storeAddresses(page: Int, city: String @where(operator: "like")): [StoreAddress!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createStore(input: CreateStoreInput! @spread): Store! @create(model: "App\\Models\\Api\\V1\\Store")
+  updateStore(input: UpdateStoreInput! @spread): Store! @update(model: "App\\Models\\Api\\V1\\Store")
+  deleteStore(id: ID! @whereKey): Store! @delete(model: "App\\Models\\Api\\V1\\Store")
+
+  createStoreAddress(input: CreateStoreAddressInput! @spread): StoreAddress! @create(model: "App\\Models\\Api\\V1\\StoreAddress")
+  updateStoreAddress(input: UpdateStoreAddressInput! @spread): StoreAddress! @update(model: "App\\Models\\Api\\V1\\StoreAddress")
+  deleteStoreAddress(id: ID! @whereKey): StoreAddress! @delete(model: "App\\Models\\Api\\V1\\StoreAddress")
+}
+
+input CreateStoreInput {
+  name: String!
+}
+
+input UpdateStoreInput {
+  id: ID! @whereKey
+  name: String
+}
+
+input CreateStoreAddressInput {
+  uf: String!
+  city: String!
+  neighborhood: String!
+  zip_code: String!
+  street: String!
+  number: Int!
+  coordinates: String
+  store_id: Int
+}
+
+input UpdateStoreAddressInput {
+  id: ID! @whereKey
+  uf: String
+  city: String
+  neighborhood: String
+  zip_code: String
+  street: String
+  number: Int
+  coordinates: String
+  store_id: Int
+}

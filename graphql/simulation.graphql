@@ -1,0 +1,60 @@
+"Loan simulation data."
+type Simulation @model(class: "App\\Models\\Api\\V1\\Simulation") {
+  id: ID!
+  uuid: String
+  amount: Float!
+  amount_with_interest: Float!
+  interest_rate_by_type_of_amount: Float!
+  interest_rate_by_number_of_installments: Float!
+  value_type_id: Int!
+  installments: Int!
+  installment_value: Float!
+  store_id: Int!
+  card_flag_id: Int!
+  ip: String
+  store: Store @belongsTo
+  cardFlag: CardFlag @belongsTo
+  valueType: ValueType @belongsTo
+  created_at: DateTimeTz!
+  updated_at: DateTimeTz!
+}
+
+extend type Query {
+  simulation(id: ID! @eq): Simulation @find
+  simulations(page: Int, store_id: Int): [Simulation!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+  createSimulation(input: CreateSimulationInput! @spread): Simulation! @create(model: "App\\Models\\Api\\V1\\Simulation")
+  updateSimulation(input: UpdateSimulationInput! @spread): Simulation! @update(model: "App\\Models\\Api\\V1\\Simulation")
+  deleteSimulation(id: ID! @whereKey): Simulation! @delete(model: "App\\Models\\Api\\V1\\Simulation")
+}
+
+input CreateSimulationInput {
+  uuid: String
+  amount: Float!
+  amount_with_interest: Float!
+  interest_rate_by_type_of_amount: Float!
+  interest_rate_by_number_of_installments: Float!
+  value_type_id: Int!
+  installments: Int!
+  installment_value: Float!
+  store_id: Int!
+  card_flag_id: Int!
+  ip: String
+}
+
+input UpdateSimulationInput {
+  id: ID! @whereKey
+  uuid: String
+  amount: Float
+  amount_with_interest: Float
+  interest_rate_by_type_of_amount: Float
+  interest_rate_by_number_of_installments: Float
+  value_type_id: Int
+  installments: Int
+  installment_value: Float
+  store_id: Int
+  card_flag_id: Int
+  ip: String
+}
