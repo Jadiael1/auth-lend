@@ -1,0 +1,102 @@
+"A datetime string with format `Y-m-d H:i:sP`, e.g. `2018-05-23 13:43:32+00:00`."
+scalar DateTimeTz @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTimeTz")
+
+type Query {
+    "Find a single user by an identifying attribute."
+    user(
+      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find
+
+    "List multiple users."
+    users(
+      id: ID
+      name: String @where(operator: "like")
+      email: String
+      page: Int
+    ): [User!]!
+    @validator(class: "App\\GraphQL\\Validators\\UserValidator")
+    @paginate(defaultCount: 10, resolver: "App\\GraphQL\\Queries\\UsersQuery")
+    @guard
+}
+
+"Account of a person who uses this application."
+type User @model(class: "App\\Models\\Api\\V1\\User") {
+    "Unique primary key."
+    id: ID!
+
+    "Non-unique name."
+    name: String!
+
+    "Non-unique surname."
+    surname: String!
+
+    "Unique user"
+    user: String!
+
+    "Unique email address."
+    email: String!
+
+    "When the email was verified."
+    email_verified_at: DateTimeTz
+
+    ""
+    is_admin: Boolean!
+
+    ""
+    permissions: [String!]
+
+    "Unique phone."
+    phone: String!
+
+    ""
+    status: Boolean!
+
+    "When the account was created."
+    created_at: DateTimeTz!
+
+    "When the account was last updated."
+    updated_at: DateTimeTz!
+}
+
+
+extend type Mutation {
+  """
+  Create a new User.
+  """
+  createUser(input: CreateUserInput! @spread): User! @create(model: "App\\Models\\Api\\V1\\User")
+
+  """
+  Update an existing User.
+  """
+  updateUser(input: UpdateUserInput! @spread): User! @update(model: "App\\Models\\Api\\V1\\User")
+
+  """
+  Delete a User by ID.
+  """
+  deleteUser(id: ID! @whereKey): User! @delete(model: "App\\Models\\Api\\V1\\User")
+}
+
+input CreateUserInput {
+  name: String!
+  surname: String!
+  user: String!
+  email: String!
+  password: String!
+  phone: String!
+  is_admin: Boolean = false
+  permissions: [String!]
+  status: Boolean = true
+}
+
+input UpdateUserInput {
+  id: ID! @whereKey
+  name: String
+  surname: String
+  user: String
+  email: String
+  phone: String
+  is_admin: Boolean
+  permissions: [String!]
+  status: Boolean
+}
