@@ -1,18 +1,21 @@
 import type { NextConfig } from "next";
 
-const picsumPhotosUrl = new URL('https://picsum.photos');
+const imagesUrl = [
+    new URL("https://picsum.photos"),
+    new URL("http://localhost:8000"),
+];
 
-const remotePattern = {
-	protocol: picsumPhotosUrl.protocol.replace(':', '') as 'http' | 'https',
-	hostname: picsumPhotosUrl.hostname,
-	pathname: '/id/**',
-	port: picsumPhotosUrl.port || '',
-};
+const remotePattern = imagesUrl.map(imageUrl => ({
+	protocol: imageUrl.protocol.replace(':', '') as 'http' | 'https',
+	hostname: imageUrl.hostname,
+	pathname: '/**',
+	port: imageUrl.port || '',
+}));
 
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-		remotePatterns: [remotePattern],
+		remotePatterns: remotePattern,
 	},
 };
 
