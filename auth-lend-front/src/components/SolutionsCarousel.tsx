@@ -53,7 +53,7 @@ export default function SolutionsCarousel() {
           {chunks.map((chunk, i) => (
             <div
               key={i}
-              className="shrink-0 w-full grid grid-cols-2 gap-4 md:grid-cols-4 md:grid-rows-2"
+              className="shrink-0 w-full grid grid-cols-2 gap-4 lg:grid-cols-4 lg:grid-rows-2"
             >
               {chunk.map((sol) => (
                 <div
