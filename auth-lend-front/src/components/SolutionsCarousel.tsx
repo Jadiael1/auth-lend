@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Solution {
@@ -12,7 +12,9 @@ interface Solution {
 export default function SolutionsCarousel() {
     const [solutions, setSolutions] = useState<Solution[]>([]);
     const [itemsPerView, setItemsPerView] = useState(8);
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(1);
+    const [transition, setTransition] = useState(true);
+    const timeout = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const update = () => {
@@ -33,14 +35,39 @@ export default function SolutionsCarousel() {
             .catch(() => {});
     }, []);
 
-    const totalSlides = Math.ceil(solutions.length / itemsPerView) || 1;
     const chunks = [] as Solution[][];
     for (let i = 0; i < solutions.length; i += itemsPerView) {
         chunks.push(solutions.slice(i, i + itemsPerView));
     }
+    const chunkSlides = chunks.length
+        ? [chunks[chunks.length - 1], ...chunks, chunks[0]]
+        : [[]];
 
-    const prev = () => setIndex((p) => (p - 1 + totalSlides) % totalSlides);
-    const next = () => setIndex((p) => (p + 1) % totalSlides);
+    const prev = () => setIndex((p) => p - 1);
+    const next = () => setIndex((p) => p + 1);
+
+    useEffect(() => {
+        if (index === chunkSlides.length - 1) {
+            timeout.current = setTimeout(() => {
+                setTransition(false);
+                setIndex(1);
+            }, 500);
+        } else if (index === 0) {
+            timeout.current = setTimeout(() => {
+                setTransition(false);
+                setIndex(chunkSlides.length - 2);
+            }, 500);
+        } else {
+            setTransition(true);
+        }
+        return () => {
+            if (timeout.current) clearTimeout(timeout.current);
+        };
+    }, [index, chunkSlides.length]);
+
+    useEffect(() => {
+        setIndex(1);
+    }, [itemsPerView, solutions.length]);
 
     return (
         <section className="py-12">
@@ -49,10 +76,10 @@ export default function SolutionsCarousel() {
             </h2>
             <div className="relative overflow-hidden">
                 <div
-                    className="flex transition-transform duration-500"
+                    className={`flex ${transition ? "transition-transform duration-500" : ""}`}
                     style={{ transform: `translateX(-${index * 100}%)` }}
                 >
-                    {chunks.map((chunk, i) => (
+                    {chunkSlides.map((chunk, i) => (
                         <div
                             key={i}
                             className="shrink-0 w-full grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-4 lg:grid-rows-2 p-16"
