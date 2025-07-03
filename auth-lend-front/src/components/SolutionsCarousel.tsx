@@ -24,7 +24,7 @@ export default function SolutionsCarousel() {
   });
 
   useEffect(() => {
-    fetch("/api/v1/solutions?per_page=20")
+    fetch("http://localhost:8000/api/v1/solutions?per_page=20")
       .then((res) => res.json())
       .then((data) => {
         const list = data?.data?.data ?? [];
