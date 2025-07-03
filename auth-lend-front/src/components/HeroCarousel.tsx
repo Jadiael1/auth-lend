@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Slide {
@@ -58,21 +58,46 @@ const slides: Slide[] = [
 ];
 
 export default function HeroCarousel() {
-    const [index, setIndex] = useState(0);
-    const prev = () => setIndex((prev) => (prev - 1 + slides.length) % slides.length);
-    const next = () => setIndex((prev) => (prev + 1) % slides.length);
+    const [index, setIndex] = useState(1);
+    const [transition, setTransition] = useState(true);
+    const timeout = useRef<NodeJS.Timeout | null>(null);
+
+    const slidesWithClones = [slides[slides.length - 1], ...slides, slides[0]];
+    const lastCloneIndex = slides.length + 1;
+
+    const prev = () => setIndex((p) => p - 1);
+    const next = () => setIndex((p) => p + 1);
+
+    useEffect(() => {
+        if (index === lastCloneIndex) {
+            timeout.current = setTimeout(() => {
+                setTransition(false);
+                setIndex(1);
+            }, 500);
+        } else if (index === 0) {
+            timeout.current = setTimeout(() => {
+                setTransition(false);
+                setIndex(slides.length);
+            }, 500);
+        } else {
+            setTransition(true);
+        }
+        return () => {
+            if (timeout.current) clearTimeout(timeout.current);
+        };
+    }, [index, lastCloneIndex]);
 
     return (
         <section className="relative overflow-hidden">
             <div
-                className="flex transition-transform duration-500"
+                className={`flex ${transition ? "transition-transform duration-500" : ""}`}
                 style={{ transform: `translateX(-${index * 100}%)` }}
             >
-                {slides.map((slide, idx) => (
+                {slidesWithClones.map((slide, idx) => (
                     <div key={idx} className="relative w-full shrink-0 h-80 md:h-[32rem]">
                         <Image
                             src={slide.image}
-                            alt="slide"
+                            alt={slide.title}
                             fill
                             className="object-cover md:object-right"
                         />
