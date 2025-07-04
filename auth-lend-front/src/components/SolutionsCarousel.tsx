@@ -246,6 +246,11 @@ export default function SolutionsCarousel() {
         );
     };
 
+    useEffect(() => {
+        const timer = setInterval(next, 8000);
+        return () => clearInterval(timer);
+    }, [next]);
+
     return (
         <section className="py-12 bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto px-4">
