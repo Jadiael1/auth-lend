@@ -26,13 +26,25 @@ function SolutionCard({
             <div className="mb-4 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/50">
                 <Briefcase className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="flex-grow font-semibold text-gray-900 dark:text-white text-base mb-2 leading-tight">
+            <h3
+                onTouchStart={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="flex-grow font-semibold text-gray-900 dark:text-white text-base mb-2 leading-tight cursor-auto select-text"
+            >
                 {title}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p
+                onTouchStart={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="text-sm text-gray-500 dark:text-gray-400 cursor-auto select-text"
+            >
                 {description}
             </p>
-            <button className="mt-4 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+            <button
+                onTouchStart={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="mt-4 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+            >
                 Saiba mais
             </button>
         </div>
@@ -148,7 +160,6 @@ export default function SolutionsCarousel() {
     });
 
     const renderContent = () => {
-        // ... (lógica de isLoading, error e solutions.length === 0 permanece a mesma) ...
         if (isLoading) {
             return (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4 md:p-6">
@@ -178,14 +189,12 @@ export default function SolutionsCarousel() {
         }
 
         return (
-            // 3. Aplicar os handlers do swipe ao wrapper
             <div
                 {...handlers}
-                className="relative overflow-hidden cursor-grab active:cursor-grabbing"
+                className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none"
             >
                 <div
                     className="flex"
-                    // Evento onTransitionEnd para um controle mais preciso
                     onTransitionEnd={handleTransitionEnd}
                     style={{
                         transform: `translateX(-${index * 100}%)`,
@@ -219,7 +228,7 @@ export default function SolutionsCarousel() {
                     <button
                         aria-label="Anterior"
                         onClick={prev}
-                        disabled={isNavigating} // Desabilita o botão
+                        disabled={isNavigating}
                         className="pointer-events-auto p-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md hover:bg-white dark:hover:bg-gray-800 transition-opacity disabled:opacity-50"
                     >
                         <ChevronLeft className="w-6 h-6" />
@@ -227,7 +236,7 @@ export default function SolutionsCarousel() {
                     <button
                         aria-label="Próximo"
                         onClick={next}
-                        disabled={isNavigating} // Desabilita o botão
+                        disabled={isNavigating}
                         className="pointer-events-auto p-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md hover:bg-white dark:hover:bg-gray-800 transition-opacity disabled:opacity-50"
                     >
                         <ChevronRight className="w-6 h-6" />
